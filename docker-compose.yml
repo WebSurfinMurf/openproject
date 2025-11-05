@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  openproject:
+    image: openproject/openproject:14
+    container_name: openproject
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /home/administrator/projects/data/openproject/assets:/var/openproject/assets
+      - /home/administrator/projects/data/openproject/logs:/var/log/openproject
+      - openproject-tmp:/opt/openproject/tmp
+    networks:
+      - traefik-net
+      - postgres-net
+      - openproject-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      
+      # HTTP Router
+      - "traefik.http.routers.openproject.rule=Host(`openproject.ai-servicers.com`)"
+      - "traefik.http.routers.openproject.entrypoints=websecure"
+      - "traefik.http.routers.openproject.tls=true"
+      - "traefik.http.routers.openproject.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.openproject.service=openproject"
+      - "traefik.http.routers.openproject.middlewares=openproject-headers"
+      
+      # Service
+      - "traefik.http.services.openproject.loadbalancer.server.port=8080"
+      
+      # Headers Middleware
+      - "traefik.http.middlewares.openproject-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.openproject-headers.headers.customrequestheaders.X-Forwarded-Host=openproject.ai-servicers.com"
+      - "traefik.http.middlewares.openproject-headers.headers.customrequestheaders.X-Forwarded-Port=443"
+      - "traefik.http.middlewares.openproject-headers.headers.customrequestheaders.X-Forwarded-Ssl=on"
+      
+      # Security Headers
+      - "traefik.http.middlewares.openproject-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.openproject-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.openproject-headers.headers.stsPreload=true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health_checks/default"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+networks:
+  traefik-net:
+    external: true
+  postgres-net:
+    external: true
+  openproject-internal:
+    driver: bridge
+
+volumes:
+  openproject-tmp:

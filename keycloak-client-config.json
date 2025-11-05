@@ -1,0 +1,29 @@
+{
+  "clientId": "openproject",
+  "name": "OpenProject",
+  "description": "OpenProject - Project Management Software",
+  "rootUrl": "https://openproject.ai-servicers.com",
+  "adminUrl": "https://openproject.ai-servicers.com",
+  "baseUrl": "/",
+  "enabled": true,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "OpenProject-8589c9dae737e43e60cd121911a7284a",
+  "redirectUris": [
+    "https://openproject.ai-servicers.com/*",
+    "https://openproject.ai-servicers.com/auth/keycloak/callback"
+  ],
+  "webOrigins": [
+    "https://openproject.ai-servicers.com"
+  ],
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": false,
+  "publicClient": false,
+  "protocol": "openid-connect",
+  "fullScopeAllowed": false,
+  "defaultClientScopes": [
+    "profile",
+    "email",
+    "roles"
+  ]
+}
