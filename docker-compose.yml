@@ -5,7 +5,7 @@ services:
     image: openproject/openproject:14
     container_name: openproject
     restart: unless-stopped
-    env_file: .env
+    env_file: /home/administrator/secrets/openproject.env
     volumes:
       - /home/administrator/projects/data/openproject/assets:/var/openproject/assets
       - /home/administrator/projects/data/openproject/logs:/var/log/openproject
