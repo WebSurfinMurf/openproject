@@ -13,7 +13,6 @@ services:
     networks:
       - traefik-net
       - postgres-net
-      - openproject-internal
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-net"
@@ -53,8 +52,6 @@ networks:
     external: true
   postgres-net:
     external: true
-  openproject-internal:
-    driver: bridge
 
 volumes:
   openproject-tmp:
